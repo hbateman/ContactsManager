@@ -2,8 +2,22 @@
 <resources>
 
     <string name="app_name">ContactsManager</string>
+    <string name="duplicate_contact">Sorry, that is a duplicate contact</string>
+    <string name="action_search">Search</string>
+    <string name="action_new">New Contact</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_contact_list_fragment">ContactListFragment</string>
+    <string name="title_activity_edit_contact">EditContactActivity</string>
+    <string name="add_contact_button_label">Add Contact</string>
+    <string name="add_contact_title">Add Contact</string>
+    <string name="contact_email_label">Email</string>
+    <string name="contact_name_label">Name</string>
+    <string name="contact_surname_label">Surame</string>
+    <string name="contact_mobile_label">Mobile</string>
+    <string name="contact_home_label">Home</string>
+    <string name="contact_work_label">Work</string>
+    <string name="save">Save</string>
+    <string name="contact_select_label">Select</string>
 
 </resources>

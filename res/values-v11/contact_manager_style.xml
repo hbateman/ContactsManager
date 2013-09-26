@@ -1,0 +1,6 @@
+<resources>
+    <style name="ActionBar.ContactManagerTheme" parent="@android:style/Widget.Holo.ActionBar"/>
+    <style name="CustomTheme" parent="@android:style/Theme.Holo">
+        <item name="android:actionBarStyle">@style/ActionBar.ContactManagerTheme</item>
+    </style>
+</resources>

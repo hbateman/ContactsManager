@@ -26,6 +26,10 @@
             android:name="com.example.contactsmanager.ContactListFragment"
             android:label="@string/title_activity_contact_list_fragment" >
         </activity>
+        <activity
+            android:name="com.example.contactsmanager.EditContactActivity"
+            android:label="@string/title_activity_edit_contact" >
+        </activity>
     </application>
 
 </manifest>
