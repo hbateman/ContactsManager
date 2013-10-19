@@ -8,6 +8,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -76,20 +78,16 @@ public class EditContactActivity extends Activity {
 	        case R.id.action_save:
 	            saveContact();
 	            return true;
+	            
+	        case R.id.action_delete:
+	            deleteContact();
+	            return true;
 	    }
 		return false;
 	}
 	
 	public void saveContact() {
-		
-		selectedContact.setName(contactNameEditText.getText().toString());
-		selectedContact.setSurname(contactSurnameEditText.getText().toString());
-		selectedContact.setMobile(contactMobileEditText.getText().toString());
-		selectedContact.setWork(contactWorkEditText.getText().toString());
-		selectedContact.setHome(contactHomeEditText.getText().toString());
-		selectedContact.setEmail(contactEmailEditText.getText().toString());
-		
-		contacts.set(element, selectedContact);
+		updateContacts();
 		
 		for (int i = 0; i < contacts.size(); i++) {
 			if (i == element) {
@@ -109,8 +107,11 @@ public class EditContactActivity extends Activity {
 			}
 		});
 		dialog.show();
+		Log.i("Edit contact", "Contact Saved");
 	}
 	
+	/** This will display a dialog informing the user that the contact they re trying to save already exists
+	 * in the list of contacts**/
 	public void duplicateContactAlert() {
 		AlertDialog dialog = new AlertDialog.Builder(EditContactActivity.this).create();
 		dialog.setTitle("Duplicate Contact Alert");
@@ -122,5 +123,41 @@ public class EditContactActivity extends Activity {
 		});
 		dialog.show();
 	}
-
+	
+	/** This will display a dialog confirming that the user wants to delete this contact. If the action is cancelled
+	 * they will be returned to the activity, otherwise the contact will be deleted and they will be returned to
+	 * the MainActivity**/
+	public void deleteContact() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(EditContactActivity.this);
+		builder.setTitle("Delete Contact?");
+		builder.setMessage("Are you sure you want to delete this contact?");
+		
+		// If the user cancels the deletion
+		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                return;
+            }
+        });
+		
+		// If the user confirms the deletion
+		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            	//contacts.remove(element);
+				finish();
+            }
+        });
+		builder.show();
+	}
+	
+	/** Update the contacts list with any new information**/
+	public void updateContacts() {
+		selectedContact.setName(contactNameEditText.getText().toString());
+		selectedContact.setSurname(contactSurnameEditText.getText().toString());
+		selectedContact.setMobile(contactMobileEditText.getText().toString());
+		selectedContact.setWork(contactWorkEditText.getText().toString());
+		selectedContact.setHome(contactHomeEditText.getText().toString());
+		selectedContact.setEmail(contactEmailEditText.getText().toString());
+		
+		//contacts.set(element, selectedContact);
+	}
 }

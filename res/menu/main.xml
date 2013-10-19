@@ -1,14 +1,20 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:MainActivity="http://schemas.android.com/apk/res-auto" >
     
     <item android:id="@+id/action_search"
-          android:icon="@drawable/ic_action_2_action_search"
-          android:title="@string/action_search"
-          android:showAsAction="ifRoom|collapseActionView"
-          android:actionViewClass="android.support.v7.widget.SearchView"/>
+		android:icon="@drawable/ic_action_2_action_search"
+		android:title="@string/action_search"
+		android:showAsAction="ifRoom|collapseActionView"
+		android:actionViewClass="android.widget.SearchView"/>
+    
+    <item android:id="@+id/sort_spinner"
+		android:showAsAction="ifRoom"
+	    android:title="@string/sort_spinner"
+	    android:actionViewClass="android.widget.Spinner" />
     
     <item android:id="@+id/action_add_contact"
-          android:icon="@drawable/ic_action_6_social_add_person"
-          android:title="@string/add_contact_button_label"
-          android:showAsAction="ifRoom"/>
+		android:icon="@drawable/ic_action_6_social_add_person"
+		android:title="@string/add_contact_button_label"
+		android:showAsAction="ifRoom"/>
     
 </menu>

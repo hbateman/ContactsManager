@@ -8,6 +8,8 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.view.MenuItemCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,8 +18,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -25,17 +30,19 @@ import android.widget.AdapterView.OnItemClickListener;
 public class MainActivity extends Activity {
 	
 	private ArrayList<Contact> contacts = new ArrayList<Contact>();
-	
+	private String[] sortOptions = {"Name", "Surname"};
 	private ListView listView;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		// set up action bar
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.show();
 		
+		populateContacts();
 		listView = (ListView)findViewById(R.id.contactList);
 
 		// This sets the ContactListAdapter which will populate the ListView with data from the contacts array
@@ -45,6 +52,17 @@ public class MainActivity extends Activity {
 	/** Inflate the menu; this adds items to the action bar if it is present. **/
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
+		
+		// Create the search icon
+		MenuItem searchItem = menu.findItem(R.id.action_search);
+		SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+		
+		// Create the sort spinner
+		MenuItem spinnerItem = menu.findItem(R.id.sort_spinner);
+		Spinner sortSpinnerView = (Spinner) spinnerItem.getActionView();
+		ArrayAdapter<String> sortAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_spinner_item, sortOptions);
+		sortSpinnerView.setAdapter(sortAdapter);
+		
 		return true;
 	}
 	
@@ -65,11 +83,10 @@ public class MainActivity extends Activity {
 	
 	/** Create a new contact **/
 	public void newContact() {
-		
-		contacts.add(new Contact("", "", "", "", "", ""));
+		contacts.add(new Contact(" ", " ", " ", " ", " ", " "));
 		Intent intent = new Intent(MainActivity.this, EditContactActivity.class);
 		intent.putParcelableArrayListExtra("contactList", contacts);
-		intent.putExtra("element", contacts.size() -1);
+		intent.putExtra("element", contacts.size() - 1);
 		startActivity(intent);
 	}
 	
@@ -90,7 +107,7 @@ public class MainActivity extends Activity {
 			LayoutInflater inflater = (LayoutInflater) MainActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			
 			// Use the LayoutInflator
-			View listContactView = inflater.inflate(R.layout.list_item_layout, null);
+			View listContactView = inflater.inflate(R.layout.contact_list_item_layout, null);
 			
 			// Retrieve the id's of the TextViews
 			TextView name = (TextView)listContactView.findViewById(R.id.contact_text_name);
@@ -106,13 +123,6 @@ public class MainActivity extends Activity {
 	
 	/** Creates the list view which will display the contacts**/
 	private void setUpListView() {
-		
-		// Add some contacts to the list of contacts
-		contacts.add(new Contact("Hugo", "Bateman", "0211081247", "2658789", "52458975", "hbat205@aucklanduni.ac.nz"));
-		contacts.add(new Contact("James", "Butler", "0211475896", "12357894", "8464886", "jbaut@theplace.com"));
-		contacts.add(new Contact("Luke", "Boyes", "0258964879", "1234567", "1234567", "lboy262@thePlace.com"));
-		contacts.add(new Contact("Pat", "Bowen", "027896231", "1234567", "1234567", "lboy262@thePlace.com"));
-		
 		// Creates an adapter between the array containing the contacts and the activity
 		ListAdapter listAdapter = new ContactListAdapter(MainActivity.this, contacts);
 		listView.setAdapter(listAdapter);
@@ -128,5 +138,15 @@ public class MainActivity extends Activity {
 				startActivity(intent);
 			}			
 		});
+	}
+	
+	/** Populate the contacts array**/
+	public void populateContacts() {
+		// Add some contacts to the list of contacts
+		contacts.add(new Contact("Hugo", "Bateman", "0211081247", "2658789", "52458975", "hbat205@aucklanduni.ac.nz"));
+		contacts.add(new Contact("James", "Butler", "0211475896", "12357894", "8464886", "jbaut@theplace.com"));
+		contacts.add(new Contact("Luke", "Boyes", "0258964879", "1234567", "1234567", "lboy262@thePlace.com"));
+		contacts.add(new Contact("Pat", "Bowen", "027896231", "1234567", "1234567", "lboy262@thePlace.com"));
+		contacts.add(new Contact("Tamsin", "Bateman", "02102912491", "8176077", "1234567", "tbat@thePlace.com"));
 	}
 }

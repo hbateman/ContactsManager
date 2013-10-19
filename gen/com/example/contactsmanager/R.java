@@ -172,14 +172,16 @@ public final class R {
         public static final int ic_action_2_action_search=0x7f020002;
         public static final int ic_action_6_social_add_person=0x7f020003;
         public static final int ic_contact=0x7f020004;
-        public static final int ic_launcher=0x7f020005;
-        public static final int ic_save=0x7f020006;
-        public static final int list_selector=0x7f020007;
+        public static final int ic_content_discard=0x7f020005;
+        public static final int ic_launcher=0x7f020006;
+        public static final int ic_save=0x7f020007;
+        public static final int list_selector=0x7f020008;
     }
     public static final class id {
-        public static final int action_add_contact=0x7f090019;
+        public static final int action_add_contact=0x7f09001b;
+        public static final int action_delete=0x7f090018;
         public static final int action_save=0x7f090017;
-        public static final int action_search=0x7f090018;
+        public static final int action_search=0x7f090019;
         public static final int addEmailTextView=0x7f090010;
         public static final int addHomeTextView=0x7f09000d;
         public static final int addMobileTextView=0x7f090007;
@@ -187,15 +189,16 @@ public final class R {
         public static final int addSurnameTextView=0x7f090004;
         public static final int addWorkTextView=0x7f09000a;
         public static final int contactList=0x01010000;
-        public static final int contact_image=0x7f090016;
-        public static final int contact_text_mobile=0x7f090014;
-        public static final int contact_text_name=0x7f090013;
+        public static final int contact_image=0x7f090014;
+        public static final int contact_text_mobile=0x7f090016;
+        public static final int contact_text_name=0x7f090015;
         public static final int editEmailText=0x7f090011;
         public static final int editHomeText=0x7f09000e;
         public static final int editMobileText=0x7f090008;
         public static final int editNameText=0x7f090002;
         public static final int editSurnameText=0x7f090005;
         public static final int editWorkText=0x7f09000b;
+        public static final int sort_spinner=0x7f09001a;
         public static final int tableRow1=0x7f090012;
         public static final int tableRowEmail=0x7f09000f;
         public static final int tableRowHome=0x7f09000c;
@@ -203,14 +206,12 @@ public final class R {
         public static final int tableRowName=0x7f090000;
         public static final int tableRowSurname=0x7f090003;
         public static final int tableRowWork=0x7f090009;
-        public static final int thumbnail=0x7f090015;
+        public static final int thumbnail=0x7f090013;
     }
     public static final class layout {
         public static final int activity_edit_contact=0x7f030000;
         public static final int activity_main=0x7f030001;
         public static final int contact_list_item_layout=0x7f030002;
-        public static final int duplicate_contact_popup=0x7f030003;
-        public static final int list_item_layout=0x7f030004;
     }
     public static final class menu {
         public static final int edit_contact=0x7f080000;
@@ -220,21 +221,22 @@ public final class R {
         public static final int action_new=0x7f070003;
         public static final int action_search=0x7f070002;
         public static final int action_settings=0x7f070004;
-        public static final int add_contact_button_label=0x7f070008;
-        public static final int add_contact_title=0x7f070009;
+        public static final int add_contact_button_label=0x7f070007;
+        public static final int add_contact_title=0x7f070008;
         public static final int app_name=0x7f070000;
-        public static final int contact_email_label=0x7f07000a;
-        public static final int contact_home_label=0x7f07000e;
-        public static final int contact_mobile_label=0x7f07000d;
-        public static final int contact_name_label=0x7f07000b;
+        public static final int contact_email_label=0x7f070009;
+        public static final int contact_home_label=0x7f07000d;
+        public static final int contact_mobile_label=0x7f07000c;
+        public static final int contact_name_label=0x7f07000a;
         public static final int contact_select_label=0x7f070011;
-        public static final int contact_surname_label=0x7f07000c;
-        public static final int contact_work_label=0x7f07000f;
+        public static final int contact_surname_label=0x7f07000b;
+        public static final int contact_work_label=0x7f07000e;
+        public static final int delete=0x7f070010;
         public static final int duplicate_contact=0x7f070001;
-        public static final int hello_world=0x7f070005;
-        public static final int save=0x7f070010;
-        public static final int title_activity_contact_list_fragment=0x7f070006;
-        public static final int title_activity_edit_contact=0x7f070007;
+        public static final int save=0x7f07000f;
+        public static final int sort_spinner=0x7f070012;
+        public static final int title_activity_contact_list_fragment=0x7f070005;
+        public static final int title_activity_edit_contact=0x7f070006;
     }
     public static final class style {
         public static final int ActionBar_ContactManagerTheme=0x7f050000;
