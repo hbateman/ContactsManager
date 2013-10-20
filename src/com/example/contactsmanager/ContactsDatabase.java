@@ -149,7 +149,7 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 		
 		String contactQuery = "SELECT * FROM " + TABLE_CONTACTS + " where " + CONTACT_ID + "='" + id + "'";
 		
-Cursor cursor = database.rawQuery(contactQuery, null);
+		Cursor cursor = database.rawQuery(contactQuery, null);
 		
 		if (cursor.moveToFirst()) {
 			do {

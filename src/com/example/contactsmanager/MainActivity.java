@@ -88,10 +88,7 @@ public class MainActivity extends ListActivity {
 	
 	/** Create a new contact **/
 	public void newContact() {
-		contacts.add(new Contact(" ", " ", " ", " ", " ", " ", " ", " "));
-		Intent intent = new Intent(MainActivity.this, EditContactActivity.class);
-		intent.putParcelableArrayListExtra("contactList", contacts);
-		intent.putExtra("element", contacts.size() - 1);
+		Intent intent = new Intent(MainActivity.this, NewContactActivity.class);
 		startActivity(intent);
 	}
 	
