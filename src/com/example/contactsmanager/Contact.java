@@ -65,6 +65,14 @@ public class Contact implements Parcelable {
 		return this.email;
 	}
 	
+	public String getAddress() {
+		return this.address;
+	}
+	
+	public String getDOB() {
+		return this.dob;
+	}
+	
 	public void setName(String newName) {
 		this.name = newName.replaceAll("\\s+","");
 	}
@@ -87,6 +95,14 @@ public class Contact implements Parcelable {
 	
 	public void setEmail(String newEmail) {
 		this.email = newEmail.replaceAll("\\s+","");
+	}
+	
+	public void setAddress(String newAddress) {
+		this.address = newAddress.replaceAll("\\s+","");
+	}
+	
+	public void setDOB(String newDOB) {
+		this.dob = newDOB.replaceAll("\\s+","");
 	}
 	
 	public boolean equals(Contact otherContact) {

@@ -27,6 +27,8 @@ public class EditContactActivity extends Activity {
 	private EditText contactWorkEditText;
 	private EditText contactHomeEditText;
 	private EditText contactEmailEditText;
+	private EditText contactAddressEditText;
+	private EditText contactDOBEditText;
 	private ArrayList<Contact> contacts;
 	private Contact selectedContact;
 	private int element;
@@ -62,6 +64,12 @@ public class EditContactActivity extends Activity {
 		
 		contactEmailEditText = (EditText) findViewById(R.id.editEmailText);
 		contactEmailEditText.setText(selectedContact.getEmail(), TextView.BufferType.EDITABLE);
+		
+		contactAddressEditText = (EditText) findViewById(R.id.editAddressText);
+		contactAddressEditText.setText(selectedContact.getAddress(), TextView.BufferType.EDITABLE);
+		
+		contactDOBEditText = (EditText) findViewById(R.id.editDOBText);
+		contactDOBEditText.setText(selectedContact.getDOB(), TextView.BufferType.EDITABLE);
 	}
 
 	@Override
@@ -157,6 +165,8 @@ public class EditContactActivity extends Activity {
 		selectedContact.setWork(contactWorkEditText.getText().toString());
 		selectedContact.setHome(contactHomeEditText.getText().toString());
 		selectedContact.setEmail(contactEmailEditText.getText().toString());
+		selectedContact.setAddress(contactAddressEditText.getText().toString());
+		selectedContact.setDOB(contactDOBEditText.getText().toString());
 		
 		//contacts.set(element, selectedContact);
 	}

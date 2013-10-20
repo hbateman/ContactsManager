@@ -83,7 +83,7 @@ public class MainActivity extends Activity {
 	
 	/** Create a new contact **/
 	public void newContact() {
-		contacts.add(new Contact(" ", " ", " ", " ", " ", " "));
+		contacts.add(new Contact(" ", " ", " ", " ", " ", " ", " ", " "));
 		Intent intent = new Intent(MainActivity.this, EditContactActivity.class);
 		intent.putParcelableArrayListExtra("contactList", contacts);
 		intent.putExtra("element", contacts.size() - 1);
@@ -143,10 +143,10 @@ public class MainActivity extends Activity {
 	/** Populate the contacts array**/
 	public void populateContacts() {
 		// Add some contacts to the list of contacts
-		contacts.add(new Contact("Hugo", "Bateman", "0211081247", "2658789", "52458975", "hbat205@aucklanduni.ac.nz"));
-		contacts.add(new Contact("James", "Butler", "0211475896", "12357894", "8464886", "jbaut@theplace.com"));
-		contacts.add(new Contact("Luke", "Boyes", "0258964879", "1234567", "1234567", "lboy262@thePlace.com"));
-		contacts.add(new Contact("Pat", "Bowen", "027896231", "1234567", "1234567", "lboy262@thePlace.com"));
-		contacts.add(new Contact("Tamsin", "Bateman", "02102912491", "8176077", "1234567", "tbat@thePlace.com"));
+		contacts.add(new Contact("Hugo", "Bateman", "0211081247", "2658789", "52458975", "hbat205@aucklanduni.ac.nz", "72 Marin Ave", "07/08/1991"));
+		contacts.add(new Contact("James", "Butler", "0211475896", "12357894", "8464886", "jbaut@theplace.com", "34 Linwood Sreet", "14/10/1991"));
+		contacts.add(new Contact("Luke", "Boyes", "0258964879", "1234567", "1234567", "lboy262@thePlace.com", "14 Harwood Lane", "16/12/1992"));
+		contacts.add(new Contact("Pat", "Bowen", "027896231", "1234567", "1234567", "pbow138@thePlace.com", "17 Alexander Street", "24/03/1991"));
+		contacts.add(new Contact("Tamsin", "Bateman", "02102912491", "8176077", "1234567", "tbat@thePlace.com", "32 Aranui Raod", "21/03/1990"));
 	}
 }
