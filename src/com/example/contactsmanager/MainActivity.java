@@ -30,6 +30,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class MainActivity extends Activity {
 	
 	private ArrayList<Contact> contacts = new ArrayList<Contact>();
+	private ContactsDatabase contactsDb;
 	private String[] sortOptions = {"Name", "Surname"};
 	private ListView listView;
 
