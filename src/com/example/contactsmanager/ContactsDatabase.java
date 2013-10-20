@@ -54,7 +54,7 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		Log.v("DATABASE", "DATABASE_CREATE");
 		db.execSQL(CREATE_CONTACTS_TABLE);
-		final String FIRST_ENTRY = "INSERT INTO " + "TABLE CARS " + "VALUES('Hugo', 'Bateman', '0211238597', '8109351', '8464886', 'hbat206@gmail.com', '72 Martin Ave', '07/08/1991')";
+		final String FIRST_ENTRY = "INSERT INTO " + TABLE_CONTACTS + "VALUES('Hugo', 'Bateman', '0211238597', '8109351', '8464886', 'hbat206@gmail.com', '72 Martin Ave', '07/08/1991')";
 		db.execSQL(FIRST_ENTRY);
 	}
 	
@@ -93,7 +93,7 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 		contentValues.put(ContactsDatabase.CONTACT_ADDRESS, queryValues.get("address"));
 		contentValues.put(ContactsDatabase.CONTACT_DOB, queryValues.get("dob"));
 		
-		return database.update(DATABASE_NAME, contentValues,
+		return database.update(TABLE_CONTACTS, contentValues,
 				CONTACT_ID + " = ?", new String[] { queryValues.get(CONTACT_ID) });
 	}
 	
@@ -101,7 +101,7 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 		
 		SQLiteDatabase database = this.getWritableDatabase();
 		
-		String deleteQuery = "DELETE FROM " + DATABASE_NAME + " WHERE " + CONTACT_ID + "='" + id + "'";
+		String deleteQuery = "DELETE * FROM " + TABLE_CONTACTS + " where " + CONTACT_ID + "='" + id + "'";
 		
 		database.execSQL(deleteQuery);
 	}
@@ -115,8 +115,7 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 		
 		ArrayList<HashMap<String, String>> contactArrayList = new ArrayList<HashMap<String, String>>();
 		
-		String selectAllQuery = "SELECT * FROM" + DATABASE_NAME;
-		String buildSQL = "SELECT " + "FROM " + TABLE_CONTACTS;
+		String selectAllQuery = "SELECT * FROM " + TABLE_CONTACTS;
 		
 		SQLiteDatabase database = this.getWritableDatabase();
 		
@@ -142,4 +141,33 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 		return contactArrayList;
 	}
 
+	public ArrayList<HashMap<String, String>> getContact(String id) {
+		
+		ArrayList<HashMap<String, String>> contactArrayList = new ArrayList<HashMap<String, String>>();
+		
+		SQLiteDatabase database = this.getWritableDatabase();
+		
+		String contactQuery = "SELECT * FROM " + TABLE_CONTACTS + " where " + CONTACT_ID + "='" + id + "'";
+		
+Cursor cursor = database.rawQuery(contactQuery, null);
+		
+		if (cursor.moveToFirst()) {
+			do {
+				HashMap<String, String> contactMap = new HashMap<String, String>();
+				
+				contactMap.put("id", cursor.getString(0));
+				contactMap.put("name", cursor.getString(1));
+				contactMap.put("surname", cursor.getString(2));
+				contactMap.put("mobile", cursor.getString(3));
+				contactMap.put("homePhone", cursor.getString(4));
+				contactMap.put("workPhone", cursor.getString(5));
+				contactMap.put("email", cursor.getString(6));
+				contactMap.put("address", cursor.getString(7));
+				contactMap.put("dob", cursor.getString(8));
+				
+				contactArrayList.add(contactMap);
+			} while (cursor.moveToNext());
+		}
+		return contactArrayList;
+	}
 }
