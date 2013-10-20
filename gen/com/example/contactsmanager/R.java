@@ -178,10 +178,10 @@ public final class R {
         public static final int list_selector=0x7f020008;
     }
     public static final class id {
-        public static final int action_add_contact=0x7f090021;
-        public static final int action_delete=0x7f09001e;
-        public static final int action_save=0x7f09001d;
-        public static final int action_search=0x7f09001f;
+        public static final int action_add_contact=0x7f090022;
+        public static final int action_delete=0x7f09001f;
+        public static final int action_save=0x7f09001e;
+        public static final int action_search=0x7f090020;
         public static final int addAddressTextView=0x7f090013;
         public static final int addDOBTextView=0x7f090016;
         public static final int addEmailTextView=0x7f090010;
@@ -192,8 +192,8 @@ public final class R {
         public static final int addWorkTextView=0x7f09000a;
         public static final int contactList=0x01010000;
         public static final int contact_image=0x7f09001a;
-        public static final int contact_text_mobile=0x7f09001c;
-        public static final int contact_text_name=0x7f09001b;
+        public static final int contact_text_mobile=0x7f09001d;
+        public static final int contact_text_name=0x7f09001c;
         public static final int editAddressText=0x7f090014;
         public static final int editDOBText=0x7f090017;
         public static final int editEmailText=0x7f090011;
@@ -202,7 +202,8 @@ public final class R {
         public static final int editNameText=0x7f090002;
         public static final int editSurnameText=0x7f090005;
         public static final int editWorkText=0x7f09000b;
-        public static final int sort_spinner=0x7f090020;
+        public static final int id=0x7f09001b;
+        public static final int sort_spinner=0x7f090021;
         public static final int tableRow1=0x7f090018;
         public static final int tableRowAddress=0x7f090012;
         public static final int tableRowDOB=0x7f090015;

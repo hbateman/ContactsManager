@@ -1,11 +1,13 @@
 package com.example.contactsmanager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.view.MenuItemCompat;
@@ -27,12 +29,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ListActivity {
 	
 	private ArrayList<Contact> contacts = new ArrayList<Contact>();
-	private ContactsDatabase contactsDb;
 	private String[] sortOptions = {"Name", "Surname"};
 	private ListView listView;
+	private ContactsDatabase database = new ContactsDatabase(this);
+	private TextView contactId;
+	ArrayList<HashMap<String, String>> contactList;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,8 +47,8 @@ public class MainActivity extends Activity {
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.show();
 		
-		populateContacts();
-		listView = (ListView)findViewById(R.id.contactList);
+		//populateContacts();
+		//listView = (ListView)findViewById(R.id.contactList);
 
 		// This sets the ContactListAdapter which will populate the ListView with data from the contacts array
 		setUpListView();
@@ -95,7 +99,7 @@ public class MainActivity extends Activity {
 	private class ContactListAdapter extends ArrayAdapter {
 
 		// This constructs the ContactListAdapter
-		public ContactListAdapter(Context context, List<Contact> contacts) {
+		public ContactListAdapter(Context context, ArrayList<HashMap<String, String>> contactList) {
 			
 			super(context, android.R.layout.simple_list_item_1, contacts);
 			
@@ -115,8 +119,8 @@ public class MainActivity extends Activity {
 			TextView moblie = (TextView)listContactView.findViewById(R.id.contact_text_mobile);
 			
 			// Retrieve the specific information about the contact that needs to be displayed
-			name.setText(contacts.get(position).getName());
-			moblie.setText(contacts.get(position).getMobile());
+			name.setText(contactList.get(position).get("name"));
+			moblie.setText(contactList.get(position).get("mobile"));
 			
 			return listContactView;
 		}
@@ -124,7 +128,31 @@ public class MainActivity extends Activity {
 	
 	/** Creates the list view which will display the contacts**/
 	private void setUpListView() {
-		// Creates an adapter between the array containing the contacts and the activity
+		
+		contactList = database.getAllContacts();
+		
+		ListAdapter adapter = new ContactListAdapter(MainActivity.this, contactList);
+		listView.setAdapter(adapter);
+		
+		if (contactList.size() != 0) {
+			listView = getListView();
+			listView.setOnItemClickListener(new OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> parentView, View clickedView,
+						int clickedViewPosition, long id) {
+					
+					contactId = (TextView) clickedView.findViewById(R.id.id);
+					String contactIdValue = contactId.getText().toString();
+					
+					Intent intent = new Intent(MainActivity.this, EditContactActivity.class);
+					intent.putExtra("contactId", contactIdValue);
+					startActivity(intent);					
+				}
+			});
+		}
+		
+		/* Creates an adapter between the array containing the contacts and the activity
 		ListAdapter listAdapter = new ContactListAdapter(MainActivity.this, contacts);
 		listView.setAdapter(listAdapter);
 		
@@ -138,7 +166,7 @@ public class MainActivity extends Activity {
 				intent.putExtra("element", clickedViewPosition);
 				startActivity(intent);
 			}			
-		});
+		});*/
 	}
 	
 	/** Populate the contacts array**/
