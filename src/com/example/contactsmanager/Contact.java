@@ -12,19 +12,23 @@ public class Contact implements Parcelable {
 	private String homePhone = "";
 	private String workPhone = "";
 	private String email = "";
+	private String address = "";
+	private String dob = "";
 	
-	public Contact(String name, String surname, String mobile, String homePhone, String workPhone, String email) {
+	public Contact(String name, String surname, String mobile, String homePhone, String workPhone, String email, String address, String dob) {
 		this.name = name;
 		this.surname = surname;
 		this.mobile = mobile;
 		this.workPhone = workPhone;
 		this.homePhone = homePhone;
 		this.email = email;
+		this.address = address;
+		this.dob = dob;
 	}
 	
 	// Used when unpacking contacts that have been parceled
 	public Contact(Parcel in) {
-		String[] data = new String[6];
+		String[] data = new String[8];
 
         in.readStringArray(data);
         this.name = data[0];
@@ -33,6 +37,8 @@ public class Contact implements Parcelable {
         this.workPhone = data[3];
         this.homePhone = data[4];
         this.email = data[5];
+        this.address = data[6];
+        this.dob = data[7];
 	}
 	
 	public String getName() {
@@ -98,7 +104,7 @@ public class Contact implements Parcelable {
 	public void writeToParcel(Parcel dest, int flags) {
 		Log.v("Contact", "writeToParcel..."+ flags);
 		dest.writeStringArray(new String[]{this.name, this.surname, this.mobile,
-				this.workPhone,this.homePhone, this.email});
+				this.workPhone,this.homePhone, this.email, this.address, this.dob});
 	}
 	
 	// Creates a CREATOR which is used to make the Parcelable object
