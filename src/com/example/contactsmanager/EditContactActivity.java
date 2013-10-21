@@ -1,6 +1,7 @@
 package com.example.contactsmanager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.os.Bundle;
 import android.app.ActionBar;
@@ -29,9 +30,9 @@ public class EditContactActivity extends Activity {
 	private EditText contactEmailEditText;
 	private EditText contactAddressEditText;
 	private EditText contactDOBEditText;
-	private ArrayList<Contact> contacts;
-	private Contact selectedContact;
-	private int element;
+	private ContactsDatabase database = new ContactsDatabase(this);
+	HashMap<String, String> contactInfo;
+	ArrayList<HashMap<String, String>> contactList;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -41,84 +42,73 @@ public class EditContactActivity extends Activity {
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.show();
 		
-		Bundle data = getIntent().getExtras(); // Get extras from the intent
-		element = data.getInt("element"); // Get the element of the selected contact
-		contacts = data.getParcelableArrayList("contactList"); // Get the array of contacts
-		selectedContact = contacts.get(element);
-		
 		// Set up the EditText fields and initialize them
 		contactNameEditText = (EditText) findViewById(R.id.editNameText);
-		contactNameEditText.setText(selectedContact.getName(), TextView.BufferType.EDITABLE);
-		
 		contactSurnameEditText = (EditText) findViewById(R.id.editSurnameText);
-		contactSurnameEditText.setText(selectedContact.getSurname(), TextView.BufferType.EDITABLE);
-		
 		contactMobileEditText = (EditText) findViewById(R.id.editMobileText);
-		contactMobileEditText.setText(selectedContact.getMobile(), TextView.BufferType.EDITABLE);
-		
 		contactWorkEditText = (EditText) findViewById(R.id.editWorkText);
-		contactWorkEditText.setText(selectedContact.getWorkPhone(), TextView.BufferType.EDITABLE);
-		
 		contactHomeEditText = (EditText) findViewById(R.id.editHomeText);
-		contactHomeEditText.setText(selectedContact.getHomePhone(), TextView.BufferType.EDITABLE);
-		
 		contactEmailEditText = (EditText) findViewById(R.id.editEmailText);
-		contactEmailEditText.setText(selectedContact.getEmail(), TextView.BufferType.EDITABLE);
-		
 		contactAddressEditText = (EditText) findViewById(R.id.editAddressText);
-		contactAddressEditText.setText(selectedContact.getAddress(), TextView.BufferType.EDITABLE);
-		
 		contactDOBEditText = (EditText) findViewById(R.id.editDOBText);
-		contactDOBEditText.setText(selectedContact.getDOB(), TextView.BufferType.EDITABLE);
+		
+		contactList = database.getAllContacts();
+		
+		Intent intent = getIntent();
+		String contactId = intent.getStringExtra("contactId");
+		
+		contactInfo = database.getContact(contactId);
+		
+		if(contactInfo.size() != 0) {
+			contactNameEditText.setText(contactInfo.get("name"), TextView.BufferType.EDITABLE);
+			contactSurnameEditText.setText(contactInfo.get("surname"), TextView.BufferType.EDITABLE);
+			contactMobileEditText.setText(contactInfo.get("mobile"), TextView.BufferType.EDITABLE);
+			contactWorkEditText.setText(contactInfo.get("workPhone"), TextView.BufferType.EDITABLE);
+			contactHomeEditText.setText(contactInfo.get("homePhone"), TextView.BufferType.EDITABLE);
+			contactEmailEditText.setText(contactInfo.get("email"), TextView.BufferType.EDITABLE);
+			contactAddressEditText.setText(contactInfo.get("address"), TextView.BufferType.EDITABLE);
+			contactDOBEditText.setText(contactInfo.get("dob"), TextView.BufferType.EDITABLE);
+		}	
 	}
 
-	@Override
+	// Inflate the menu; this adds items to the action bar if it is present.
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.edit_contact, menu);
 		return true;
 	}
 	
 	/** Define what happens when a menu item is selected **/
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle presses on the action bar items
+	    // Handle selection of action bar items
 	    switch (item.getItemId()) {
 	        case R.id.action_save:
 	            saveContact();
 	            return true;
 	            
 	        case R.id.action_delete:
-	            deleteContact();
+	            deleteContactAlert();
 	            return true;
 	    }
 		return false;
 	}
 	
 	public void saveContact() {
-		updateContacts();
-		
-		for (int i = 0; i < contacts.size(); i++) {
-			if (i == element) {
+
+		for (int i = 0; i < contactList.size(); i++) {
+			if (contactList.get(i).get("id").equals(contactInfo.get("id"))) {
 				continue;
 			}
-			if (selectedContact.equals(contacts.get(i))) {
-				duplicateContactAlert();
-				return;
+			if (contactNameEditText.getText().toString().equals(contactList.get(i).get("name"))) {
+				if (contactSurnameEditText.getText().toString().equals(contactList.get(i).get("surname"))) {
+					duplicateContactAlert();
+					return;
+				}
 			}
 		}		
-		AlertDialog dialog = new AlertDialog.Builder(EditContactActivity.this).create();
-		dialog.setTitle("Save Successful");
-		dialog.setMessage("Contact Successfully Saved");
-		dialog.setButton(-1, "OK", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface theDialog, int which) {
-				
-			}
-		});
-		dialog.show();
-		Log.i("Edit contact", "Contact Saved");
+		updateContact();
 	}
 	
-	/** This will display a dialog informing the user that the contact they re trying to save already exists
+	/** This will display a dialog informing the user that the contact they are trying to save already exists
 	 * in the list of contacts**/
 	public void duplicateContactAlert() {
 		AlertDialog dialog = new AlertDialog.Builder(EditContactActivity.this).create();
@@ -135,7 +125,7 @@ public class EditContactActivity extends Activity {
 	/** This will display a dialog confirming that the user wants to delete this contact. If the action is cancelled
 	 * they will be returned to the activity, otherwise the contact will be deleted and they will be returned to
 	 * the MainActivity**/
-	public void deleteContact() {
+	public void deleteContactAlert() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(EditContactActivity.this);
 		builder.setTitle("Delete Contact?");
 		builder.setMessage("Are you sure you want to delete this contact?");
@@ -150,24 +140,68 @@ public class EditContactActivity extends Activity {
 		// If the user confirms the deletion
 		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-            	//contacts.remove(element);
-				finish();
+            	deleteContact();
             }
         });
 		builder.show();
 	}
 	
-	/** Update the contacts list with any new information**/
-	public void updateContacts() {
-		selectedContact.setName(contactNameEditText.getText().toString());
-		selectedContact.setSurname(contactSurnameEditText.getText().toString());
-		selectedContact.setMobile(contactMobileEditText.getText().toString());
-		selectedContact.setWork(contactWorkEditText.getText().toString());
-		selectedContact.setHome(contactHomeEditText.getText().toString());
-		selectedContact.setEmail(contactEmailEditText.getText().toString());
-		selectedContact.setAddress(contactAddressEditText.getText().toString());
-		selectedContact.setDOB(contactDOBEditText.getText().toString());
+	public void deleteContact() {
+
+		Intent intent = getIntent();
+		String contactId = intent.getStringExtra("contactId");
 		
-		//contacts.set(element, selectedContact);
+		database.deleteContact(contactId);
+		
+		callMainActivity();
+	}
+	
+	/** Update the contacts list with any new information**/
+	public void updateContact() {
+		HashMap<String, String> newInfo = new HashMap<String, String>();
+		
+		// Set up the EditText fields and initialize them
+		contactNameEditText = (EditText) findViewById(R.id.editNameText);
+		contactSurnameEditText = (EditText) findViewById(R.id.editSurnameText);
+		contactMobileEditText = (EditText) findViewById(R.id.editMobileText);
+		contactWorkEditText = (EditText) findViewById(R.id.editWorkText);
+		contactHomeEditText = (EditText) findViewById(R.id.editHomeText);
+		contactEmailEditText = (EditText) findViewById(R.id.editEmailText);
+		contactAddressEditText = (EditText) findViewById(R.id.editAddressText);
+		contactDOBEditText = (EditText) findViewById(R.id.editDOBText);
+		
+		Intent intent = getIntent();
+		
+		String contactId = intent.getStringExtra("contactId");
+		
+		newInfo.put("id", contactId);
+		newInfo.put("name", contactNameEditText.getText().toString());
+		newInfo.put("surname", contactSurnameEditText.getText().toString());
+		newInfo.put("mobile", contactMobileEditText.getText().toString());
+		newInfo.put("workPhone", contactWorkEditText.getText().toString());
+		newInfo.put("homePhone", contactHomeEditText.getText().toString());
+		newInfo.put("email", contactEmailEditText.getText().toString());
+		newInfo.put("address", contactAddressEditText.getText().toString());
+		newInfo.put("dob", contactDOBEditText.getText().toString());
+		
+		database.updateContact(newInfo);
+		
+		AlertDialog dialog = new AlertDialog.Builder(EditContactActivity.this).create();
+		dialog.setTitle("Save Successful");
+		dialog.setMessage("Contact Successfully Saved");
+		dialog.setButton(-1, "OK", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface theDialog, int which) {
+				
+			}
+		});
+		dialog.show();
+		Log.v("Edit contact", "Contact Edit Saved");
+		
+		callMainActivity();
+	}
+	
+	public void callMainActivity() {
+		Intent intent = new Intent(EditContactActivity.this, MainActivity.class);
+		startActivity(intent);
 	}
 }

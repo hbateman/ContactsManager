@@ -31,7 +31,6 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class MainActivity extends ListActivity {
 	
-	private ArrayList<Contact> contacts = new ArrayList<Contact>();
 	private String[] sortOptions = {"Name", "Surname"};
 	private ListView listView;
 	private ContactsDatabase database = new ContactsDatabase(this);
@@ -46,9 +45,6 @@ public class MainActivity extends ListActivity {
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.show();
-		
-		//populateContacts();
-		//listView = (ListView)findViewById(R.id.contactList);
 
 		// This sets the ContactListAdapter which will populate the ListView with data from the contacts array
 		setUpListView();
@@ -93,12 +89,12 @@ public class MainActivity extends ListActivity {
 	}
 	
 	/** This adapter class will allow the data in the contacts array to be displayed in the  **/
-	private class ContactListAdapter extends ArrayAdapter {
+	private class ContactListAdapter extends ArrayAdapter<HashMap<String, String>> {
 
 		// This constructs the ContactListAdapter
 		public ContactListAdapter(Context context, ArrayList<HashMap<String, String>> contactList) {
 			
-			super(context, android.R.layout.simple_list_item_1, contacts);
+			super(context, android.R.layout.simple_list_item_1, contactList);
 			
 		}
 		
@@ -114,10 +110,12 @@ public class MainActivity extends ListActivity {
 			// Retrieve the id's of the TextViews
 			TextView name = (TextView)listContactView.findViewById(R.id.contact_text_name);
 			TextView moblie = (TextView)listContactView.findViewById(R.id.contact_text_mobile);
+			TextView id = (TextView)listContactView.findViewById(R.id.id);
 			
 			// Retrieve the specific information about the contact that needs to be displayed
 			name.setText(contactList.get(position).get("name"));
 			moblie.setText(contactList.get(position).get("mobile"));
+			id.setText(contactList.get(position).get("id"));
 			
 			return listContactView;
 		}
@@ -128,11 +126,14 @@ public class MainActivity extends ListActivity {
 		
 		contactList = database.getAllContacts();
 		
+		Log.i("Database", contactList.get(0).get("name"));
+		
 		ListAdapter adapter = new ContactListAdapter(MainActivity.this, contactList);
+		
+		listView = getListView();
 		listView.setAdapter(adapter);
 		
 		if (contactList.size() != 0) {
-			listView = getListView();
 			listView.setOnItemClickListener(new OnItemClickListener() {
 
 				@Override
@@ -142,37 +143,11 @@ public class MainActivity extends ListActivity {
 					contactId = (TextView) clickedView.findViewById(R.id.id);
 					String contactIdValue = contactId.getText().toString();
 					
-					Intent intent = new Intent(MainActivity.this, EditContactActivity.class);
+					Intent intent = new Intent(getApplication(), EditContactActivity.class);
 					intent.putExtra("contactId", contactIdValue);
 					startActivity(intent);					
 				}
 			});
 		}
-		
-		/* Creates an adapter between the array containing the contacts and the activity
-		ListAdapter listAdapter = new ContactListAdapter(MainActivity.this, contacts);
-		listView.setAdapter(listAdapter);
-		
-		// Creates a listener which responds to clicks on list items
-		listView.setOnItemClickListener(new OnItemClickListener() {
-
-			public void onItemClick(AdapterView<?> parentView, View clickedView, int clickedViewPosition, long id) {
-				
-				Intent intent = new Intent(MainActivity.this, EditContactActivity.class);
-				intent.putParcelableArrayListExtra("contactList", contacts);
-				intent.putExtra("element", clickedViewPosition);
-				startActivity(intent);
-			}			
-		});*/
-	}
-	
-	/** Populate the contacts array**/
-	public void populateContacts() {
-		// Add some contacts to the list of contacts
-		contacts.add(new Contact("Hugo", "Bateman", "0211081247", "2658789", "52458975", "hbat205@aucklanduni.ac.nz", "72 Marin Ave", "07/08/1991"));
-		contacts.add(new Contact("James", "Butler", "0211475896", "12357894", "8464886", "jbaut@theplace.com", "34 Linwood Sreet", "14/10/1991"));
-		contacts.add(new Contact("Luke", "Boyes", "0258964879", "1234567", "1234567", "lboy262@thePlace.com", "14 Harwood Lane", "16/12/1992"));
-		contacts.add(new Contact("Pat", "Bowen", "027896231", "1234567", "1234567", "pbow138@thePlace.com", "17 Alexander Street", "24/03/1991"));
-		contacts.add(new Contact("Tamsin", "Bateman", "02102912491", "8176077", "1234567", "tbat@thePlace.com", "32 Aranui Raod", "21/03/1990"));
 	}
 }

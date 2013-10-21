@@ -16,6 +16,7 @@ import android.widget.EditText;
 //import android.widget.TextView;
 
 public class NewContactActivity extends Activity {
+	
 	private EditText contactNameEditText;
 	private EditText contactSurnameEditText;
 	private EditText contactMobileEditText;
@@ -52,7 +53,7 @@ public class NewContactActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.edit_contact, menu);
+		getMenuInflater().inflate(R.menu.new_contact, menu);
 		return true;
 	}
 	
@@ -62,10 +63,6 @@ public class NewContactActivity extends Activity {
 	    switch (item.getItemId()) {
 	        case R.id.action_save:
 	        	checkBeforeSave();
-	            return true;
-	            
-	        case R.id.action_delete:
-	            deleteContact();
 	            return true;
 	    }
 		return false;
@@ -110,11 +107,10 @@ public class NewContactActivity extends Activity {
 		dialog.show();
 		Log.v("Edit contact", "Contact Saved");
 		
-		Intent intent = new Intent(NewContactActivity.this, MainActivity.class);
-		startActivity(intent);
+		this.callMainActivity();
 	}
 	
-	/** This will display a dialog informing the user that the contact they re trying to save already exists
+	/** This will display a dialog informing the user that the contact they are trying to save already exists
 	 * in the list of contacts**/
 	public void duplicateContactAlert() {
 		AlertDialog dialog = new AlertDialog.Builder(NewContactActivity.this).create();
@@ -128,21 +124,8 @@ public class NewContactActivity extends Activity {
 		dialog.show();
 	}
 	
-	/** This will display a dialog confirming that the user wants to delete this contact. If the action is cancelled
-	 * they will be returned to the activity, otherwise the contact will be deleted and they will be returned to
-	 * the MainActivity**/
-	public void deleteContact() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(NewContactActivity.this);
-		builder.setTitle("No Can Do");
-		builder.setMessage("Cannot Delete Contact That Has Not Yet Been Created");
-		
-		// If the user confirms the deletion
-		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-            	//contacts.remove(element);
-            	return;
-            }
-        });
-		builder.show();
+	public void callMainActivity() {
+		Intent intent = new Intent(getApplication(), MainActivity.class);
+		startActivity(intent);
 	}
 }
