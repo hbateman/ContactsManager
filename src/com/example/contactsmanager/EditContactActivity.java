@@ -44,6 +44,7 @@ public class EditContactActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_edit_contact);
 		
+		// Set up action bar
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.show();
@@ -58,13 +59,18 @@ public class EditContactActivity extends Activity {
 		contactAddressEditText = (EditText) findViewById(R.id.editAddressText);
 		contactDOBEditText = (EditText) findViewById(R.id.editDOBText);
 		
+		//Get contact information from database
 		contactList = database.getAllContacts();
+		database.close();
 		
+		// Get id of contact selected in MainActivity
 		Intent intent = getIntent();
 		contactId = intent.getStringExtra("contactId");
 		
+		// Get information on selected contact from the database
 		contactInfo = database.getContact(contactId);
 		
+		// Initialise all the fields with the contacts information
 		if(contactInfo.size() != 0) {
 			contactNameEditText.setText(contactInfo.get("name"), TextView.BufferType.EDITABLE);
 			contactSurnameEditText.setText(contactInfo.get("surname"), TextView.BufferType.EDITABLE);
@@ -75,6 +81,7 @@ public class EditContactActivity extends Activity {
 			contactAddressEditText.setText(contactInfo.get("address"), TextView.BufferType.EDITABLE);
 			contactDOBEditText.setText(contactInfo.get("dob"), TextView.BufferType.EDITABLE);
 			
+			// Set up the contacts image
 			imageSetup();
 		}
 	}
@@ -90,7 +97,7 @@ public class EditContactActivity extends Activity {
 	    // Handle selection of action bar items
 	    switch (item.getItemId()) {
 	        case R.id.action_save:
-	            saveContact();
+	        	checkBeforeUpdate();
 	            return true;
 	            
 	        case R.id.action_delete:
@@ -100,12 +107,14 @@ public class EditContactActivity extends Activity {
 		return false;
 	}
 	
+	/** Set the contacts photo**/
 	public void imageSetup() {
 		contactPicture = (ImageView) findViewById(R.id.contactImageView);
 		byte[] savedPhoto = database.getContactPhoto(contactId);
 		photo = BitmapFactory.decodeByteArray(savedPhoto, 0 ,savedPhoto.length);
 		contactPicture.setImageBitmap(photo);
 		
+		// Set the onClickListener to select an image from the gallery when the contacts photo is selected
 		contactPicture.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 			      Intent intent = new Intent(Intent.ACTION_PICK);
@@ -116,10 +125,11 @@ public class EditContactActivity extends Activity {
 		});
 	}
 	
+	/** Called when the user returns with an image after selecting it from the gallery **/
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		
 		super.onActivityResult(requestCode, resultCode, data);
 
+		// If the ActivityResult is good, set the contacts image to be the image returned
 		if (resultCode == RESULT_OK){
 			InputStream imageStream = null;
 			try {
@@ -135,15 +145,17 @@ public class EditContactActivity extends Activity {
 		}
 	}
 	
-	public void saveContact() {
-
+	/** Checks the database for duplicate contacts before updating. A duplicate exists if they share the same
+	  * first name and last name **/
+	public void checkBeforeUpdate() {
 		for (int i = 0; i < contactList.size(); i++) {
 			if (contactList.get(i).get("id").equals(contactInfo.get("id"))) {
-				continue;
+				continue; // Prevents comparing the contact to itself
 			}
 			if (contactNameEditText.getText().toString().equals(contactList.get(i).get("name"))) {
 				if (contactSurnameEditText.getText().toString().equals(contactList.get(i).get("surname"))) {
-					duplicateContactAlert();
+					duplicateContactAlert(); // If contact is a duplicate, inform user
+					Log.v("EditContactActivity Event", "Tried to save duplicate contact");
 					return;
 				}
 			}
@@ -183,14 +195,15 @@ public class EditContactActivity extends Activity {
 		// If the user confirms the deletion
 		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+            	Log.v("EditContactActivity Action", "Contact deleted");
             	deleteContact();
             }
         });
 		builder.show();
 	}
 	
+	/** Will delete the chosen contact from the database**/
 	public void deleteContact() {
-
 		Intent intent = getIntent();
 		String contactId = intent.getStringExtra("contactId");
 		
@@ -203,20 +216,11 @@ public class EditContactActivity extends Activity {
 	public void updateContact() {
 		HashMap<String, String> newInfo = new HashMap<String, String>();
 		
-		// Set up the EditText fields and initialize them
-		contactNameEditText = (EditText) findViewById(R.id.editNameText);
-		contactSurnameEditText = (EditText) findViewById(R.id.editSurnameText);
-		contactMobileEditText = (EditText) findViewById(R.id.editMobileText);
-		contactWorkEditText = (EditText) findViewById(R.id.editWorkText);
-		contactHomeEditText = (EditText) findViewById(R.id.editHomeText);
-		contactEmailEditText = (EditText) findViewById(R.id.editEmailText);
-		contactAddressEditText = (EditText) findViewById(R.id.editAddressText);
-		contactDOBEditText = (EditText) findViewById(R.id.editDOBText);
-		
 		Intent intent = getIntent();
 		
 		String contactId = intent.getStringExtra("contactId");
 		
+		// Store the contacts information in a Hashmap and pass it to the database
 		newInfo.put("id", contactId);
 		newInfo.put("name", contactNameEditText.getText().toString());
 		newInfo.put("surname", contactSurnameEditText.getText().toString());
@@ -226,22 +230,31 @@ public class EditContactActivity extends Activity {
 		newInfo.put("email", contactEmailEditText.getText().toString());
 		newInfo.put("address", contactAddressEditText.getText().toString());
 		newInfo.put("dob", contactDOBEditText.getText().toString());
+		
+		// Convert contacts picture to a byte array so that it can be stored as a BLOB in the database
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		photo.compress(Bitmap.CompressFormat.PNG, 100, bos);
 		byte[] bArray = bos.toByteArray();
 		
 		database.updateContact(newInfo, bArray);
-		
+
+		Log.v("Edit contact", "Contact Edit Saved");
+		confirmSaveAlert();
+	}
+	
+	/** Display an AlertDialog informing the user the contact has been saved**/
+	public void confirmSaveAlert() {
 		AlertDialog dialog = new AlertDialog.Builder(EditContactActivity.this).create();
-		dialog.setTitle("Save Successful");
-		dialog.setMessage("Contact Successfully Saved");
+		dialog.setTitle("Contact Save Successful");
+		dialog.setMessage("Contact Has Been Saved");
 		dialog.setButton(-1, "OK", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface theDialog, int which) {
-				Intent intent = new Intent(EditContactActivity.this, MainActivity.class);
+				// Return to MainActivity
+				Intent intent = new Intent(getApplication(), MainActivity.class);
+				Log.i("NewContactActivity Action", "Contact saved and returning to MainActivity");
 				startActivity(intent);
 			}
 		});
-		Log.v("Edit contact", "Contact Edit Saved");
 		dialog.show();
 	}
 	

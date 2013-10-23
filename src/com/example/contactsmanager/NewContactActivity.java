@@ -40,7 +40,6 @@ public class NewContactActivity extends Activity {
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		setContentView(R.layout.activity_edit_contact);
 		
 		//Get contact information from database
@@ -120,17 +119,32 @@ public class NewContactActivity extends Activity {
 	}
 	
 	/** Checks the database for duplicate contacts before saving. A duplicate exists if they share the same
-		first name and last name **/
+	  * first name and last name **/
 	public void checkBeforeSave() {
 		for (int i = 0; i < contactList.size(); i++) {
 			if (contactNameEditText.getText().toString().equals(contactList.get(i).get("name"))) {
 				if (contactSurnameEditText.getText().toString().equals(contactList.get(i).get("surname"))) {
-					duplicateContactAlert();
+					Log.v("NewContactActivity Event", "Tried to save duplicate contact");
+					duplicateContactAlert(); // If contact is a duplicate, inform user
 					return;
 				}
 			}
 		}
 		save();
+	}
+	
+	/** This will display a dialog informing the user that the contact they are trying to save already exists
+	 * in the list of contacts**/
+	public void duplicateContactAlert() {
+		AlertDialog dialog = new AlertDialog.Builder(NewContactActivity.this).create();
+		dialog.setTitle("Duplicate Contact Alert");
+		dialog.setMessage("Contact Described Already Exists");
+		dialog.setButton(-1, "OK", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface theDialog, int which) {
+				return;
+			}
+		});
+		dialog.show();
 	}
 	
 	/** Save the contact to the database**/
@@ -156,31 +170,20 @@ public class NewContactActivity extends Activity {
 		database.insertContact(contactQueryMap, bArray);
 		database.close();
 		
-		Log.i("New Contact Activity", "New contact inserted into database");
+		Log.v("New Contact Activity", "New contact inserted into database");
 		confirmSaveAlert();
 	}
 	
-	/** This will display a dialog informing the user that the contact they are trying to save already exists
-	 * in the list of contacts**/
-	public void duplicateContactAlert() {
-		AlertDialog dialog = new AlertDialog.Builder(NewContactActivity.this).create();
-		dialog.setTitle("Duplicate Contact Alert");
-		dialog.setMessage("Contact Described Already Exists");
-		dialog.setButton(-1, "OK", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface theDialog, int which) {
-				return;
-			}
-		});
-		dialog.show();
-	}
-	
+	/** Display an AlertDialog informing the user the contact has been saved**/
 	public void confirmSaveAlert() {
 		AlertDialog dialog = new AlertDialog.Builder(NewContactActivity.this).create();
 		dialog.setTitle("Contact Save Successful");
 		dialog.setMessage("Contact Has Been Saved");
 		dialog.setButton(-1, "OK", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface theDialog, int which) {
+				// Return to MainActivity
 				Intent intent = new Intent(getApplication(), MainActivity.class);
+				Log.i("NewContactActivity Action", "Contact saved and returning to MainActivity");
 				startActivity(intent);
 			}
 		});

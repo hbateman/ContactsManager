@@ -61,8 +61,8 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 		onCreate(db);
 	}
 	
+	/** Insert a new contact into the table **/
 	public void insertContact(HashMap<String, String> queryValues, byte[] photo) {
-		
 		SQLiteDatabase database = this.getWritableDatabase();
 		
 		ContentValues contentValues = new ContentValues();
@@ -82,8 +82,8 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 		database.close();	
 	}
 	
+	/** Update a specified contacts information in the table **/
 	public int updateContact(HashMap<String, String> queryValues, byte[] photo) {
-		
 		SQLiteDatabase database = this.getWritableDatabase();
 		
 		ContentValues contentValues = new ContentValues();
@@ -102,8 +102,8 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 				CONTACT_ID + " = ?", new String[] { queryValues.get(CONTACT_ID) });
 	}
 	
+	/** Delete a specified contact in the table **/
 	public void deleteContact(String id) {
-		
 		SQLiteDatabase database = this.getWritableDatabase();
 		
 		String deleteQuery = "DELETE FROM " + TABLE_CONTACTS + " where " + CONTACT_ID + "='" + id + "'";
@@ -111,6 +111,7 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 		database.execSQL(deleteQuery);
 	}
 	
+	/** Retrieve all the contacts from the table and order them by their name **/
 	public ArrayList<HashMap<String, String>> getAllContacts() {
 		
 		ArrayList<HashMap<String, String>> contactArrayList = new ArrayList<HashMap<String, String>>();
@@ -140,6 +141,7 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 		return contactArrayList;
 	}
 	
+	/** Retrieve all the contacts from the table and order them by their surname's **/
 	public ArrayList<HashMap<String, String>> getContactsBySurname() {
 		
 		ArrayList<HashMap<String, String>> contactArrayList = new ArrayList<HashMap<String, String>>();
@@ -170,6 +172,7 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 		return contactArrayList;
 	}
 	
+	/** Retrieve all the contacts from the table and order them by their mobile numbers **/
 	public ArrayList<HashMap<String, String>> getContactsByNumber() {
 		
 		ArrayList<HashMap<String, String>> contactArrayList = new ArrayList<HashMap<String, String>>();
@@ -200,6 +203,7 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 		return contactArrayList;
 	}
 
+	/** Retrieve the information about a specific contact **/
 	public HashMap<String, String> getContact(String id) {
 		
 		HashMap<String, String> contactMap = new HashMap<String, String>();
@@ -227,6 +231,7 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 		return contactMap;
 	}
 	
+	/** Retrieve the byte code which represents the specified contacts photo **/
 	public byte[] getContactPhoto(String id) {
 		
 		SQLiteDatabase database = this.getWritableDatabase();
