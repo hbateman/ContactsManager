@@ -126,7 +126,6 @@ public class NewContactActivity extends Activity {
 			}
 		}
 		save();
-		this.callMainActivity();
 	}
 	
 	public void save() {
@@ -173,7 +172,8 @@ public class NewContactActivity extends Activity {
 		dialog.setMessage("Contact Has Been Saved");
 		dialog.setButton(-1, "OK", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface theDialog, int which) {
-				
+				Intent intent = new Intent(getApplication(), MainActivity.class);
+				startActivity(intent);
 			}
 		});
 		dialog.show();

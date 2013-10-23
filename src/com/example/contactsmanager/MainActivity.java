@@ -2,35 +2,27 @@ package com.example.contactsmanager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import android.os.Bundle;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class MainActivity extends ListActivity implements OnItemSelectedListener{
@@ -106,6 +98,7 @@ public class MainActivity extends ListActivity implements OnItemSelectedListener
 	/** Create a new contact **/
 	public void newContact() {
 		Intent intent = new Intent(MainActivity.this, NewContactActivity.class);
+		Log.v("Main Activity Action", "Launching NewContactActivity");
 		startActivity(intent);
 	}
 	
@@ -133,10 +126,10 @@ public class MainActivity extends ListActivity implements OnItemSelectedListener
 			TextView moblie = (TextView)listContactView.findViewById(R.id.contact_text_mobile);
 			TextView id = (TextView)listContactView.findViewById(R.id.id);
 			
-			ImageView contactPicture = (ImageView) findViewById(R.id.contact_image);
+			/*ImageView contactPicture = (ImageView) findViewById(R.id.contact_image);
 			byte[] savedPhoto = database.getContactPhoto(contactList.get(position).get("id"));
 			Bitmap photo = BitmapFactory.decodeByteArray(savedPhoto, 0 ,savedPhoto.length);
-			contactPicture.setImageBitmap(photo);
+			contactPicture.setImageBitmap(photo);*/
 			
 			// Retrieve the specific information about the contact that needs to be displayed
 			name.setText(contactList.get(position).get("name"));
@@ -167,6 +160,7 @@ public class MainActivity extends ListActivity implements OnItemSelectedListener
 					
 					Intent intent = new Intent(getApplication(), EditContactActivity.class);
 					intent.putExtra("contactId", contactIdValue);
+					Log.v("Main Activity Action", "Launching EditContactActivity");
 					startActivity(intent);					
 				}
 			});

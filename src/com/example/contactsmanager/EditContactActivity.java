@@ -237,13 +237,12 @@ public class EditContactActivity extends Activity {
 		dialog.setMessage("Contact Successfully Saved");
 		dialog.setButton(-1, "OK", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface theDialog, int which) {
-				
+				Intent intent = new Intent(EditContactActivity.this, MainActivity.class);
+				startActivity(intent);
 			}
 		});
-		dialog.show();
 		Log.v("Edit contact", "Contact Edit Saved");
-		
-		callMainActivity();
+		dialog.show();
 	}
 	
 	public void callMainActivity() {
