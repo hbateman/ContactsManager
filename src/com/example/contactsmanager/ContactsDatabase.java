@@ -31,6 +31,7 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 	private static final String CONTACT_EMAIL = "email";
 	private static final String CONTACT_ADDRESS = "address";
 	private static final String CONTACT_DOB = "DOB";
+	private static final String CONTACT_PHOTO = "photo";
 	
 	private static final String CREATE_CONTACTS_TABLE = 
 			"CREATE TABLE IF NOT EXISTS " + TABLE_CONTACTS + " ("
@@ -42,7 +43,8 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 			+ CONTACT_WORKPHONE + " TEXT,"
 			+ CONTACT_EMAIL + " TEXT,"
 			+ CONTACT_ADDRESS + " TEXT,"
-			+ CONTACT_DOB + " TEXT);";
+			+ CONTACT_DOB + " TEXT,"
+			+ CONTACT_PHOTO + " BLOB);";
 	
 	public ContactsDatabase(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -75,6 +77,7 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 		contentValues.put(ContactsDatabase.CONTACT_EMAIL, queryValues.get("email"));
 		contentValues.put(ContactsDatabase.CONTACT_ADDRESS, queryValues.get("address"));
 		contentValues.put(ContactsDatabase.CONTACT_DOB, queryValues.get("dob"));
+		contentValues.put(ContactsDatabase.CONTACT_PHOTO, queryValues.get("photo"));
 		
 		database.insert(ContactsDatabase.TABLE_CONTACTS, null, contentValues);
 		
@@ -95,6 +98,7 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 		contentValues.put(ContactsDatabase.CONTACT_EMAIL, queryValues.get("email"));
 		contentValues.put(ContactsDatabase.CONTACT_ADDRESS, queryValues.get("address"));
 		contentValues.put(ContactsDatabase.CONTACT_DOB, queryValues.get("dob"));
+		contentValues.put(ContactsDatabase.CONTACT_PHOTO, queryValues.get("photo"));
 		
 		return database.update(TABLE_CONTACTS, contentValues,
 				CONTACT_ID + " = ?", new String[] { queryValues.get(CONTACT_ID) });
@@ -131,6 +135,7 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 				contactMap.put("email", cursor.getString(6));
 				contactMap.put("address", cursor.getString(7));
 				contactMap.put("dob", cursor.getString(8));
+				contactMap.put("photo", cursor.getString(9));
 				
 				contactArrayList.add(contactMap);
 			} while (cursor.moveToNext());
@@ -161,6 +166,7 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 				contactMap.put("email", cursor.getString(6));
 				contactMap.put("address", cursor.getString(7));
 				contactMap.put("dob", cursor.getString(8));
+				contactMap.put("photo", cursor.getString(9));
 				
 				contactArrayList.add(contactMap);
 			} while (cursor.moveToNext());
@@ -191,6 +197,7 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 				contactMap.put("email", cursor.getString(6));
 				contactMap.put("address", cursor.getString(7));
 				contactMap.put("dob", cursor.getString(8));
+				contactMap.put("photo", cursor.getString(9));
 				
 				contactArrayList.add(contactMap);
 			} while (cursor.moveToNext());
@@ -219,6 +226,7 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 				contactMap.put("email", cursor.getString(6));
 				contactMap.put("address", cursor.getString(7));
 				contactMap.put("dob", cursor.getString(8));
+				contactMap.put("photo", cursor.getString(9));
 
 			} while (cursor.moveToNext());
 		}
