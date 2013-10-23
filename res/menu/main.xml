@@ -10,11 +10,12 @@
     <item android:id="@+id/sort_spinner"
 		android:showAsAction="ifRoom"
 	    android:title="@string/sort_spinner"
+	    android:entries="@array/sort_options_array"
 	    android:actionViewClass="android.widget.Spinner" />
     
     <item android:id="@+id/action_add_contact"
 		android:icon="@drawable/ic_action_6_social_add_person"
 		android:title="@string/add_contact_button_label"
-		android:showAsAction="ifRoom"/>
+		android:showAsAction="always"/>
     
 </menu>

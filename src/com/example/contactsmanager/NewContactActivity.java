@@ -1,5 +1,7 @@
 package com.example.contactsmanager;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -8,12 +10,18 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
-//import android.widget.TextView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 public class NewContactActivity extends Activity {
 	
@@ -25,6 +33,8 @@ public class NewContactActivity extends Activity {
 	private EditText contactEmailEditText;
 	private EditText contactAddressEditText;
 	private EditText contactDOBEditText;
+	private ImageView contactPicture;
+	private TextView textTargetUri;
 	private ContactsDatabase database = new ContactsDatabase(this);
 	ArrayList<HashMap<String, String>> contactList;
 
@@ -34,6 +44,7 @@ public class NewContactActivity extends Activity {
 		setContentView(R.layout.activity_edit_contact);
 		
 		contactList = database.getAllContacts();
+		database.close();
 		
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
@@ -48,6 +59,8 @@ public class NewContactActivity extends Activity {
 		contactEmailEditText = (EditText) findViewById(R.id.editEmailText);
 		contactAddressEditText = (EditText) findViewById(R.id.editAddressText);
 		contactDOBEditText = (EditText) findViewById(R.id.editDOBText);
+		
+		imageSetup();
 	}
 
 	@Override
@@ -68,6 +81,39 @@ public class NewContactActivity extends Activity {
 		return false;
 	}
 	
+	public void imageSetup() {
+		contactPicture = (ImageView) findViewById(R.id.contactImageView);
+		
+		contactPicture.setOnClickListener(new OnClickListener() {
+			public void onClick(View arg0) {
+			      Intent intent = new Intent(Intent.ACTION_PICK);
+			      intent.setType("image/*");
+			      Log.v("Image Selection", "Image Selection Started");
+			      startActivityForResult(intent, 0);
+			}
+		});
+	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (resultCode == RESULT_OK){
+			InputStream imageStream = null;
+			Bitmap bitMap;
+			try {
+				imageStream = getContentResolver().openInputStream(data.getData());
+				
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.inSampleSize =8;
+			bitMap = BitmapFactory.decodeStream(imageStream,null,options);
+			contactPicture.setImageBitmap(bitMap);
+		}
+	}
+	
 	public void checkBeforeSave() {
 		
 		for (int i = 0; i < contactList.size(); i++) {
@@ -79,6 +125,7 @@ public class NewContactActivity extends Activity {
 			}
 		}
 		save();
+		this.callMainActivity();
 	}
 	
 	public void save() {
@@ -95,19 +142,9 @@ public class NewContactActivity extends Activity {
 		contactQueryMap.put("dob", contactDOBEditText.getText().toString());
 		
 		database.insertContact(contactQueryMap);
+		database.close();
 		
-		AlertDialog dialog = new AlertDialog.Builder(NewContactActivity.this).create();
-		dialog.setTitle("Save Successful");
-		dialog.setMessage("Contact Successfully Saved");
-		dialog.setButton(-1, "OK", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface theDialog, int which) {
-				
-			}
-		});
-		dialog.show();
-		Log.v("Edit contact", "Contact Saved");
-		
-		this.callMainActivity();
+		confirmSaveAlert();
 	}
 	
 	/** This will display a dialog informing the user that the contact they are trying to save already exists
@@ -116,6 +153,18 @@ public class NewContactActivity extends Activity {
 		AlertDialog dialog = new AlertDialog.Builder(NewContactActivity.this).create();
 		dialog.setTitle("Duplicate Contact Alert");
 		dialog.setMessage("Contact Described Already Exists");
+		dialog.setButton(-1, "OK", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface theDialog, int which) {
+				return;
+			}
+		});
+		dialog.show();
+	}
+	
+	public void confirmSaveAlert() {
+		AlertDialog dialog = new AlertDialog.Builder(NewContactActivity.this).create();
+		dialog.setTitle("Contact Save Successful");
+		dialog.setMessage("Contact Has Been Saved");
 		dialog.setButton(-1, "OK", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface theDialog, int which) {
 				

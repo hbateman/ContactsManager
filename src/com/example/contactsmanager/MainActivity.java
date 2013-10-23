@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
@@ -29,9 +30,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends ListActivity implements OnItemSelectedListener{
 	
-	private String[] sortOptions = {"Name", "Surname"};
+	private String[] sortOptions = {"Name", "Surname", "Mobile"};
 	private ListView listView;
 	private ContactsDatabase database = new ContactsDatabase(this);
 	private TextView contactId;
@@ -45,6 +46,9 @@ public class MainActivity extends ListActivity {
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.show();
+		
+		contactList = database.getAllContacts();
+		database.close();
 
 		// This sets the ContactListAdapter which will populate the ListView with data from the contacts array
 		setUpListView();
@@ -61,6 +65,7 @@ public class MainActivity extends ListActivity {
 		// Create the sort spinner
 		MenuItem spinnerItem = menu.findItem(R.id.sort_spinner);
 		Spinner sortSpinnerView = (Spinner) spinnerItem.getActionView();
+		sortSpinnerView.setOnItemSelectedListener(this);
 		ArrayAdapter<String> sortAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_spinner_item, sortOptions);
 		sortSpinnerView.setAdapter(sortAdapter);
 		
@@ -75,11 +80,24 @@ public class MainActivity extends ListActivity {
 	            //openSearch();
 	            return true;
 	        case R.id.action_add_contact:
-	        	//create a new contact
 	        	newContact();
 	            return true;
 	    }
 		return false;
+	}
+	
+	public void onItemSelected(AdapterView<?> parentView, View view, int position, long id) {
+		
+		if (position == 0) contactList = database.getAllContacts();
+		else if (position == 1) contactList = database.getContactsBySurname();
+		else if (position == 2) contactList = database.getContactsByNumber();
+		database.close();
+
+		setUpListView();
+	}
+
+	public void onNothingSelected(AdapterView<?> parentView) {
+		
 	}
 	
 	/** Create a new contact **/
@@ -123,10 +141,6 @@ public class MainActivity extends ListActivity {
 	
 	/** Creates the list view which will display the contacts**/
 	private void setUpListView() {
-		
-		contactList = database.getAllContacts();
-		
-		Log.i("Database", contactList.get(0).get("name"));
 		
 		ListAdapter adapter = new ContactListAdapter(MainActivity.this, contactList);
 		

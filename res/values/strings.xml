@@ -19,9 +19,16 @@
     <string name="contact_work_label">Work</string>
     <string name="contact_address_label">Address</string>
     <string name="contact_dob_label">Date of Birth</string>
+    <string name="contact_image">Date of Birth</string>
     <string name="save">Save</string>
      <string name="delete">Delete Contact</string>
     <string name="contact_select_label">Select</string>
     <string name="sort_spinner">Sort Contacts</string>
+    
+    <string-array name="sort_options_array">
+        <item>First Name</item>
+        <item>Last Name</item>
+        <item>Number</item>
+    </string-array>
 
 </resources>

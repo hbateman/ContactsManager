@@ -113,7 +113,66 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 		
 		ArrayList<HashMap<String, String>> contactArrayList = new ArrayList<HashMap<String, String>>();
 		
-		String selectAllQuery = "SELECT * FROM " + TABLE_CONTACTS;
+		String selectAllQuery = "SELECT * FROM " + TABLE_CONTACTS + " ORDER BY " + CONTACT_NAME;
+		SQLiteDatabase database = this.getWritableDatabase();
+		
+		Cursor cursor = database.rawQuery(selectAllQuery, null);
+		
+		if (cursor.moveToFirst()) {
+			do {
+				HashMap<String, String> contactMap = new HashMap<String, String>();
+				
+				contactMap.put("id", cursor.getString(0));
+				contactMap.put("name", cursor.getString(1));
+				contactMap.put("surname", cursor.getString(2));
+				contactMap.put("mobile", cursor.getString(3));
+				contactMap.put("homePhone", cursor.getString(4));
+				contactMap.put("workPhone", cursor.getString(5));
+				contactMap.put("email", cursor.getString(6));
+				contactMap.put("address", cursor.getString(7));
+				contactMap.put("dob", cursor.getString(8));
+				
+				contactArrayList.add(contactMap);
+			} while (cursor.moveToNext());
+		}
+		return contactArrayList;
+	}
+	
+	public ArrayList<HashMap<String, String>> getContactsBySurname() {
+		
+		ArrayList<HashMap<String, String>> contactArrayList = new ArrayList<HashMap<String, String>>();
+		
+		String selectAllQuery = "SELECT * FROM " + TABLE_CONTACTS + " ORDER BY " + CONTACT_SURNAME;
+		
+		SQLiteDatabase database = this.getWritableDatabase();
+		
+		Cursor cursor = database.rawQuery(selectAllQuery, null);
+		
+		if (cursor.moveToFirst()) {
+			do {
+				HashMap<String, String> contactMap = new HashMap<String, String>();
+				
+				contactMap.put("id", cursor.getString(0));
+				contactMap.put("name", cursor.getString(1));
+				contactMap.put("surname", cursor.getString(2));
+				contactMap.put("mobile", cursor.getString(3));
+				contactMap.put("homePhone", cursor.getString(4));
+				contactMap.put("workPhone", cursor.getString(5));
+				contactMap.put("email", cursor.getString(6));
+				contactMap.put("address", cursor.getString(7));
+				contactMap.put("dob", cursor.getString(8));
+				
+				contactArrayList.add(contactMap);
+			} while (cursor.moveToNext());
+		}
+		return contactArrayList;
+	}
+	
+	public ArrayList<HashMap<String, String>> getContactsByNumber() {
+		
+		ArrayList<HashMap<String, String>> contactArrayList = new ArrayList<HashMap<String, String>>();
+		
+		String selectAllQuery = "SELECT * FROM " + TABLE_CONTACTS + " ORDER BY " + CONTACT_MOBILE;
 		
 		SQLiteDatabase database = this.getWritableDatabase();
 		
