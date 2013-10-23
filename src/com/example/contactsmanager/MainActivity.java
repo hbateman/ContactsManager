@@ -105,7 +105,7 @@ public class MainActivity extends ListActivity implements OnItemSelectedListener
 	public void newContact() {
 		Intent intent = new Intent(MainActivity.this, NewContactActivity.class);
 		Log.v("Main Activity Action", "Launching NewContactActivity");
-		startActivity(intent);
+		startActivityForResult(intent, 1);
 	}
 	
 	/** This adapter class will allow the data in the contactList to be displayed in the ListView **/
@@ -152,7 +152,7 @@ public class MainActivity extends ListActivity implements OnItemSelectedListener
 		if (contactList.size() != 0) {
 			listView.setOnItemClickListener(new OnItemClickListener() {
 
-				@Override
+				// Create the method for handling clicks on contacts in the list
 				public void onItemClick(AdapterView<?> parentView, View clickedView,
 						int clickedViewPosition, long id) {
 					
@@ -162,9 +162,22 @@ public class MainActivity extends ListActivity implements OnItemSelectedListener
 					Intent intent = new Intent(getApplication(), EditContactActivity.class);
 					intent.putExtra("contactId", contactIdValue);
 					Log.v("Main Activity Action", "Launching EditContactActivity");
-					startActivity(intent);					
+					startActivityForResult(intent, 1);					
 				}
 			});
+		}
+	}
+	
+	/** Called when the user returns with an image after selecting it from the gallery **/
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		// If result is ok, refresh the contact list to display any changes
+		if (resultCode == RESULT_OK) {
+			contactList = database.getAllContacts();
+			database.close();
+			Log.v("MainActivity Event", "Returned from other activity");
+			setUpListView();
 		}
 	}
 }

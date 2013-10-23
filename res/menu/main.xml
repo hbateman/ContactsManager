@@ -1,12 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:MainActivity="http://schemas.android.com/apk/res-auto" >
     
-    <item android:id="@+id/action_search"
-		android:icon="@drawable/ic_action_2_action_search"
-		android:title="@string/action_search"
-		android:showAsAction="ifRoom|collapseActionView"
-		android:actionViewClass="android.widget.SearchView"/>
-    
     <item android:id="@+id/sort_spinner"
 		android:showAsAction="ifRoom"
 	    android:title="@string/sort_spinner"

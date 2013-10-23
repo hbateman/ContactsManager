@@ -181,17 +181,11 @@ public class NewContactActivity extends Activity {
 		dialog.setMessage("Contact Has Been Saved");
 		dialog.setButton(-1, "OK", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface theDialog, int which) {
-				// Return to MainActivity
-				Intent intent = new Intent(getApplication(), MainActivity.class);
 				Log.i("NewContactActivity Action", "Contact saved and returning to MainActivity");
-				startActivity(intent);
+				setResult(Activity.RESULT_OK);
+				finish();
 			}
 		});
 		dialog.show();
-	}
-	
-	public void callMainActivity() {
-		Intent intent = new Intent(getApplication(), MainActivity.class);
-		startActivity(intent);
 	}
 }

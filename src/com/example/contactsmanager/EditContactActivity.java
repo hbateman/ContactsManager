@@ -250,16 +250,18 @@ public class EditContactActivity extends Activity {
 		dialog.setButton(-1, "OK", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface theDialog, int which) {
 				// Return to MainActivity
-				Intent intent = new Intent(getApplication(), MainActivity.class);
-				Log.i("NewContactActivity Action", "Contact saved and returning to MainActivity");
-				startActivity(intent);
+				Log.i("EditContactActivity Action", "Contact saved and returning to MainActivity");
+				setResult(Activity.RESULT_OK);
+				finish();
 			}
 		});
 		dialog.show();
 	}
 	
 	public void callMainActivity() {
-		Intent intent = new Intent(EditContactActivity.this, MainActivity.class);
-		startActivity(intent);
+		// Return to MainActivity
+		Log.i("EditContactActivity Action", "Contact saved and returning to MainActivity");
+		setResult(Activity.RESULT_OK);
+		finish();
 	}
 }
