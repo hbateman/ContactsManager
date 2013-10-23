@@ -38,11 +38,12 @@ public class MainActivity extends ListActivity implements OnItemSelectedListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		// set up action bar
+		// Set up action bar
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.show();
 		
+		// Load contacts from database
 		contactList = database.getAllContacts();
 		database.close();
 
@@ -52,14 +53,15 @@ public class MainActivity extends ListActivity implements OnItemSelectedListener
 
 	/** Inflate the menu; this adds items to the action bar if it is present. **/
 	public boolean onCreateOptionsMenu(Menu menu) {
+		
 		getMenuInflater().inflate(R.menu.main, menu);
 		
 		// Create the search icon
-		SearchManager searchManager =
-		           (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+		/*SearchManager searchManager =
+		           (SearchManager) getSystemService(Context.SEARCH_SERVICE);*/
 		MenuItem searchItem = menu.findItem(R.id.action_search);
 		SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+		/*searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));*/
 		
 		// Create the sort spinner
 		MenuItem spinnerItem = menu.findItem(R.id.sort_spinner);
@@ -85,6 +87,7 @@ public class MainActivity extends ListActivity implements OnItemSelectedListener
 		return false;
 	}
 	
+	/** This changes the sort order when selected from the sort drop-down menu in the action bar **/
 	public void onItemSelected(AdapterView<?> parentView, View view, int position, long id) {
 		
 		if (position == 0) contactList = database.getAllContacts();
@@ -92,12 +95,11 @@ public class MainActivity extends ListActivity implements OnItemSelectedListener
 		else if (position == 2) contactList = database.getContactsByNumber();
 		database.close();
 
-		setUpListView();
+		Log.v("Main Activity Action", "Changing sort order");
+		setUpListView(); // reset the list with new order
 	}
 
-	public void onNothingSelected(AdapterView<?> parentView) {
-		
-	}
+	public void onNothingSelected(AdapterView<?> parentView) {}
 	
 	/** Create a new contact **/
 	public void newContact() {
@@ -106,7 +108,7 @@ public class MainActivity extends ListActivity implements OnItemSelectedListener
 		startActivity(intent);
 	}
 	
-	/** This adapter class will allow the data in the contacts array to be displayed in the  **/
+	/** This adapter class will allow the data in the contactList to be displayed in the ListView **/
 	private class ContactListAdapter extends ArrayAdapter<HashMap<String, String>> {
 
 		// This constructs the ContactListAdapter
@@ -129,11 +131,6 @@ public class MainActivity extends ListActivity implements OnItemSelectedListener
 			TextView name = (TextView)listContactView.findViewById(R.id.contact_text_name);
 			TextView moblie = (TextView)listContactView.findViewById(R.id.contact_text_mobile);
 			TextView id = (TextView)listContactView.findViewById(R.id.id);
-			
-			/*ImageView contactPicture = (ImageView) findViewById(R.id.contact_image);
-			byte[] savedPhoto = database.getContactPhoto(contactList.get(position).get("id"));
-			Bitmap photo = BitmapFactory.decodeByteArray(savedPhoto, 0 ,savedPhoto.length);
-			contactPicture.setImageBitmap(photo);*/
 			
 			// Retrieve the specific information about the contact that needs to be displayed
 			name.setText(contactList.get(position).get("name"));

@@ -43,9 +43,11 @@ public class NewContactActivity extends Activity {
 		
 		setContentView(R.layout.activity_edit_contact);
 		
+		//Get contact information from database
 		contactList = database.getAllContacts();
 		database.close();
 		
+		//set up action bar
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.show();
@@ -60,12 +62,12 @@ public class NewContactActivity extends Activity {
 		contactAddressEditText = (EditText) findViewById(R.id.editAddressText);
 		contactDOBEditText = (EditText) findViewById(R.id.editDOBText);
 		
+		// set the contacts image to the default
 		imageSetup();
 	}
 
-	@Override
+	/** Inflate the menu; this adds items to the action bar if it is present. **/
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.new_contact, menu);
 		return true;
 	}
@@ -81,10 +83,12 @@ public class NewContactActivity extends Activity {
 		return false;
 	}
 	
+	/** set the contacts image from the default found in res/drawable **/
 	public void imageSetup() {
 		contactPicture = (ImageView) findViewById(R.id.contactImageView);
 		contactPicture.setImageResource(R.drawable.ic_contact);
 		
+		// Set the onClickListener to select an image from the gallery when the contacts photo is selected
 		contactPicture.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 			      Intent intent = new Intent(Intent.ACTION_PICK);
@@ -94,11 +98,11 @@ public class NewContactActivity extends Activity {
 			}
 		});
 	}
-	
+	/** Called when the user returns with an image after selecting it from the gallery **/
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		
 		super.onActivityResult(requestCode, resultCode, data);
 
+		// If the ActivityResult is good, set the contacts image to be the image returned
 		if (resultCode == RESULT_OK){
 			InputStream imageStream = null;
 			Bitmap bitMap;
@@ -115,8 +119,9 @@ public class NewContactActivity extends Activity {
 		}
 	}
 	
+	/** Checks the database for duplicate contacts before saving. A duplicate exists if they share the same
+		first name and last name **/
 	public void checkBeforeSave() {
-		
 		for (int i = 0; i < contactList.size(); i++) {
 			if (contactNameEditText.getText().toString().equals(contactList.get(i).get("name"))) {
 				if (contactSurnameEditText.getText().toString().equals(contactList.get(i).get("surname"))) {
@@ -128,10 +133,11 @@ public class NewContactActivity extends Activity {
 		save();
 	}
 	
+	/** Save the contact to the database**/
 	public void save() {
-		
 		HashMap<String, String> contactQueryMap =  new  HashMap<String, String>();
 		
+		// Store the contacts information in a Hashmap and pass it to the database
 		contactQueryMap.put("name", contactNameEditText.getText().toString());
 		contactQueryMap.put("surname", contactSurnameEditText.getText().toString());
 		contactQueryMap.put("mobile", contactMobileEditText.getText().toString());
@@ -141,6 +147,7 @@ public class NewContactActivity extends Activity {
 		contactQueryMap.put("address", contactAddressEditText.getText().toString());
 		contactQueryMap.put("dob", contactDOBEditText.getText().toString());
 		
+		// Convert contacts picture to a byte array so that it can be stored as a BLOB in the database
 		photo = ((BitmapDrawable)contactPicture.getDrawable()).getBitmap();
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		photo.compress(Bitmap.CompressFormat.PNG, 100, bos);
@@ -149,6 +156,7 @@ public class NewContactActivity extends Activity {
 		database.insertContact(contactQueryMap, bArray);
 		database.close();
 		
+		Log.i("New Contact Activity", "New contact inserted into database");
 		confirmSaveAlert();
 	}
 	
