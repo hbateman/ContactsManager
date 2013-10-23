@@ -6,6 +6,7 @@ import java.util.HashMap;
 import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.ListActivity;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.view.MenuItemCompat;
@@ -54,8 +55,11 @@ public class MainActivity extends ListActivity implements OnItemSelectedListener
 		getMenuInflater().inflate(R.menu.main, menu);
 		
 		// Create the search icon
+		SearchManager searchManager =
+		           (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 		MenuItem searchItem = menu.findItem(R.id.action_search);
 		SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 		
 		// Create the sort spinner
 		MenuItem spinnerItem = menu.findItem(R.id.sort_spinner);

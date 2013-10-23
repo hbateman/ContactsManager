@@ -21,8 +21,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <meta-data android:name="android.app.searchable"
-            android:resource="@xml/searchable" />
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
         <activity
             android:name="com.example.contactsmanager.ContactListFragment"
@@ -35,6 +37,13 @@
         <activity
             android:name="com.example.contactsmanager.NewContactActivity"
             android:label="@string/title_activity_new_contact" >
+        </activity>
+        <activity
+            android:name="com.example.contactsmanager.SearchActivity"
+            android:label="@string/title_activity_search" >
+            <intent-filter>
+                 <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
         </activity>
     </application>
 

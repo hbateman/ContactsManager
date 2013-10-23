@@ -185,6 +185,7 @@ public final class R {
         public static final int action_delete=0x7f0b0020;
         public static final int action_save=0x7f0b001f;
         public static final int action_search=0x7f0b0021;
+        public static final int action_settings=0x7f0b0024;
         public static final int addAddressTextView=0x7f0b0013;
         public static final int addDOBTextView=0x7f0b0016;
         public static final int addEmailTextView=0x7f0b0010;
@@ -221,12 +222,14 @@ public final class R {
     public static final class layout {
         public static final int activity_edit_contact=0x7f030000;
         public static final int activity_main=0x7f030001;
-        public static final int contact_list_item_layout=0x7f030002;
+        public static final int activity_search=0x7f030002;
+        public static final int contact_list_item_layout=0x7f030003;
     }
     public static final class menu {
         public static final int edit_contact=0x7f0a0000;
         public static final int main=0x7f0a0001;
         public static final int new_contact=0x7f0a0002;
+        public static final int search=0x7f0a0003;
     }
     public static final class string {
         public static final int action_new=0x7f080003;
@@ -247,12 +250,14 @@ public final class R {
         public static final int contact_work_label=0x7f08000f;
         public static final int delete=0x7f080014;
         public static final int duplicate_contact=0x7f080001;
+        public static final int hello_world=0x7f080019;
         public static final int save=0x7f080013;
         public static final int search_hint=0x7f080017;
         public static final int sort_spinner=0x7f080016;
         public static final int title_activity_contact_list_fragment=0x7f080005;
         public static final int title_activity_edit_contact=0x7f080006;
         public static final int title_activity_new_contact=0x7f080007;
+        public static final int title_activity_search=0x7f080018;
     }
     public static final class style {
         public static final int ActionBar_ContactManagerTheme=0x7f060000;
