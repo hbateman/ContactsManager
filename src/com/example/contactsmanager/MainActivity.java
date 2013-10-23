@@ -10,6 +10,8 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -129,6 +132,11 @@ public class MainActivity extends ListActivity implements OnItemSelectedListener
 			TextView name = (TextView)listContactView.findViewById(R.id.contact_text_name);
 			TextView moblie = (TextView)listContactView.findViewById(R.id.contact_text_mobile);
 			TextView id = (TextView)listContactView.findViewById(R.id.id);
+			
+			ImageView contactPicture = (ImageView) findViewById(R.id.contact_image);
+			byte[] savedPhoto = database.getContactPhoto(contactList.get(position).get("id"));
+			Bitmap photo = BitmapFactory.decodeByteArray(savedPhoto, 0 ,savedPhoto.length);
+			contactPicture.setImageBitmap(photo);
 			
 			// Retrieve the specific information about the contact that needs to be displayed
 			name.setText(contactList.get(position).get("name"));

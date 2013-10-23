@@ -13,7 +13,7 @@ import android.util.Log;
 public class ContactsDatabase extends SQLiteOpenHelper {
 	
 	// Database version
-	public static final int DATABASE_VERSION = 1;
+	public static final int DATABASE_VERSION = 2;
 	
 	// Database name
 	public static final String DATABASE_NAME = "contactsdatabase.db";
@@ -44,7 +44,7 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 			+ CONTACT_EMAIL + " TEXT,"
 			+ CONTACT_ADDRESS + " TEXT,"
 			+ CONTACT_DOB + " TEXT,"
-			+ CONTACT_PHOTO + " BLOB);";
+			+ "photo" + " BLOB);";
 	
 	public ContactsDatabase(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -53,17 +53,15 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		Log.v("DATABASE", "DATABASE_CREATE");
 		db.execSQL(CREATE_CONTACTS_TABLE);
-		final String FIRST_ENTRY = "INSERT INTO " + TABLE_CONTACTS + " VALUES('1','Hugo', 'Bateman', '0211238597', '8109351', '8464886', 'hbat206@gmail.com', '72 Martin Ave', '07/08/1991');";
-		db.execSQL(FIRST_ENTRY);
 	}
 
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		String query = "DROP TABLE IF EXISTS" + TABLE_CONTACTS;
+		String query = "DROP TABLE IF EXISTS " + TABLE_CONTACTS;
 		db.execSQL(query);
 		onCreate(db);
 	}
 	
-	public void insertContact(HashMap<String, String> queryValues) {
+	public void insertContact(HashMap<String, String> queryValues, byte[] photo) {
 		
 		SQLiteDatabase database = this.getWritableDatabase();
 		
@@ -77,14 +75,14 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 		contentValues.put(ContactsDatabase.CONTACT_EMAIL, queryValues.get("email"));
 		contentValues.put(ContactsDatabase.CONTACT_ADDRESS, queryValues.get("address"));
 		contentValues.put(ContactsDatabase.CONTACT_DOB, queryValues.get("dob"));
-		contentValues.put(ContactsDatabase.CONTACT_PHOTO, queryValues.get("photo"));
+		contentValues.put(ContactsDatabase.CONTACT_PHOTO, photo);
 		
 		database.insert(ContactsDatabase.TABLE_CONTACTS, null, contentValues);
 		
 		database.close();	
 	}
 	
-	public int updateContact(HashMap<String, String> queryValues) {
+	public int updateContact(HashMap<String, String> queryValues, byte[] photo) {
 		
 		SQLiteDatabase database = this.getWritableDatabase();
 		
@@ -98,7 +96,7 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 		contentValues.put(ContactsDatabase.CONTACT_EMAIL, queryValues.get("email"));
 		contentValues.put(ContactsDatabase.CONTACT_ADDRESS, queryValues.get("address"));
 		contentValues.put(ContactsDatabase.CONTACT_DOB, queryValues.get("dob"));
-		contentValues.put(ContactsDatabase.CONTACT_PHOTO, queryValues.get("photo"));
+		contentValues.put(ContactsDatabase.CONTACT_PHOTO, photo);
 		
 		return database.update(TABLE_CONTACTS, contentValues,
 				CONTACT_ID + " = ?", new String[] { queryValues.get(CONTACT_ID) });
@@ -135,7 +133,6 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 				contactMap.put("email", cursor.getString(6));
 				contactMap.put("address", cursor.getString(7));
 				contactMap.put("dob", cursor.getString(8));
-				contactMap.put("photo", cursor.getString(9));
 				
 				contactArrayList.add(contactMap);
 			} while (cursor.moveToNext());
@@ -166,7 +163,6 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 				contactMap.put("email", cursor.getString(6));
 				contactMap.put("address", cursor.getString(7));
 				contactMap.put("dob", cursor.getString(8));
-				contactMap.put("photo", cursor.getString(9));
 				
 				contactArrayList.add(contactMap);
 			} while (cursor.moveToNext());
@@ -197,7 +193,6 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 				contactMap.put("email", cursor.getString(6));
 				contactMap.put("address", cursor.getString(7));
 				contactMap.put("dob", cursor.getString(8));
-				contactMap.put("photo", cursor.getString(9));
 				
 				contactArrayList.add(contactMap);
 			} while (cursor.moveToNext());
@@ -226,10 +221,28 @@ public class ContactsDatabase extends SQLiteOpenHelper {
 				contactMap.put("email", cursor.getString(6));
 				contactMap.put("address", cursor.getString(7));
 				contactMap.put("dob", cursor.getString(8));
-				contactMap.put("photo", cursor.getString(9));
 
 			} while (cursor.moveToNext());
 		}
 		return contactMap;
+	}
+	
+	public byte[] getContactPhoto(String id) {
+		
+		SQLiteDatabase database = this.getWritableDatabase();
+		
+		String contactQuery = "SELECT * FROM " + TABLE_CONTACTS + " WHERE " + CONTACT_ID + "='" + id + "'";
+		
+		Cursor cursor = database.rawQuery(contactQuery, null);
+		
+		byte[] photo = null;
+		
+		if (cursor.moveToFirst()) {
+			do {
+				photo = cursor.getBlob(9);
+			} while (cursor.moveToNext());
+		}
+		
+		return photo;	
 	}
 }

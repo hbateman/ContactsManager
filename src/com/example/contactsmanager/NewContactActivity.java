@@ -1,5 +1,6 @@
 package com.example.contactsmanager;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -21,7 +22,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 public class NewContactActivity extends Activity {
 	
@@ -34,7 +34,7 @@ public class NewContactActivity extends Activity {
 	private EditText contactAddressEditText;
 	private EditText contactDOBEditText;
 	private ImageView contactPicture;
-	private TextView textTargetUri;
+	private Bitmap photo;
 	private ContactsDatabase database = new ContactsDatabase(this);
 	ArrayList<HashMap<String, String>> contactList;
 
@@ -83,6 +83,7 @@ public class NewContactActivity extends Activity {
 	
 	public void imageSetup() {
 		contactPicture = (ImageView) findViewById(R.id.contactImageView);
+		contactPicture.setImageResource(R.drawable.ic_contact);
 		
 		contactPicture.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
@@ -141,7 +142,12 @@ public class NewContactActivity extends Activity {
 		contactQueryMap.put("address", contactAddressEditText.getText().toString());
 		contactQueryMap.put("dob", contactDOBEditText.getText().toString());
 		
-		database.insertContact(contactQueryMap);
+		photo = ((BitmapDrawable)contactPicture.getDrawable()).getBitmap();
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		photo.compress(Bitmap.CompressFormat.PNG, 100, bos);
+		byte[] bArray = bos.toByteArray();
+		
+		database.insertContact(contactQueryMap, bArray);
 		database.close();
 		
 		confirmSaveAlert();

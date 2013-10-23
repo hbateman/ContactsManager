@@ -1,5 +1,8 @@
 package com.example.contactsmanager;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -7,17 +10,17 @@ import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
-import android.widget.PopupWindow;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class EditContactActivity extends Activity {
@@ -31,8 +34,11 @@ public class EditContactActivity extends Activity {
 	private EditText contactAddressEditText;
 	private EditText contactDOBEditText;
 	private ContactsDatabase database = new ContactsDatabase(this);
-	HashMap<String, String> contactInfo;
-	ArrayList<HashMap<String, String>> contactList;
+	private ImageView contactPicture;
+	private Bitmap photo;
+	private String contactId;
+	private HashMap<String, String> contactInfo;
+	private ArrayList<HashMap<String, String>> contactList;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -55,7 +61,7 @@ public class EditContactActivity extends Activity {
 		contactList = database.getAllContacts();
 		
 		Intent intent = getIntent();
-		String contactId = intent.getStringExtra("contactId");
+		contactId = intent.getStringExtra("contactId");
 		
 		contactInfo = database.getContact(contactId);
 		
@@ -68,7 +74,9 @@ public class EditContactActivity extends Activity {
 			contactEmailEditText.setText(contactInfo.get("email"), TextView.BufferType.EDITABLE);
 			contactAddressEditText.setText(contactInfo.get("address"), TextView.BufferType.EDITABLE);
 			contactDOBEditText.setText(contactInfo.get("dob"), TextView.BufferType.EDITABLE);
-		}	
+			
+			imageSetup();
+		}
 	}
 
 	// Inflate the menu; this adds items to the action bar if it is present.
@@ -90,6 +98,41 @@ public class EditContactActivity extends Activity {
 	            return true;
 	    }
 		return false;
+	}
+	
+	public void imageSetup() {
+		contactPicture = (ImageView) findViewById(R.id.contactImageView);
+		byte[] savedPhoto = database.getContactPhoto(contactId);
+		photo = BitmapFactory.decodeByteArray(savedPhoto, 0 ,savedPhoto.length);
+		contactPicture.setImageBitmap(photo);
+		
+		contactPicture.setOnClickListener(new OnClickListener() {
+			public void onClick(View arg0) {
+			      Intent intent = new Intent(Intent.ACTION_PICK);
+			      intent.setType("image/*");
+			      Log.v("Image Selection", "Image Selection Started");
+			      startActivityForResult(intent, 0);
+			}
+		});
+	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (resultCode == RESULT_OK){
+			InputStream imageStream = null;
+			try {
+				imageStream = getContentResolver().openInputStream(data.getData());
+				
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.inSampleSize =8;
+			photo = BitmapFactory.decodeStream(imageStream,null,options);
+			contactPicture.setImageBitmap(photo);
+		}
 	}
 	
 	public void saveContact() {
@@ -183,8 +226,11 @@ public class EditContactActivity extends Activity {
 		newInfo.put("email", contactEmailEditText.getText().toString());
 		newInfo.put("address", contactAddressEditText.getText().toString());
 		newInfo.put("dob", contactDOBEditText.getText().toString());
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		photo.compress(Bitmap.CompressFormat.PNG, 100, bos);
+		byte[] bArray = bos.toByteArray();
 		
-		database.updateContact(newInfo);
+		database.updateContact(newInfo, bArray);
 		
 		AlertDialog dialog = new AlertDialog.Builder(EditContactActivity.this).create();
 		dialog.setTitle("Save Successful");
